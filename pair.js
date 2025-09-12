@@ -24,7 +24,7 @@ const {
     prepareWAMessageMedia,
     generateWAMessageFromContent,
     S_WHATSAPP_NET
-} = require('baileys');
+} = require('@whiskeysockets/baileys');
 
 // GitHub configuration via environment variables
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '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';
