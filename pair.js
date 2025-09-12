@@ -24,12 +24,17 @@ const {
     prepareWAMessageMedia,
     generateWAMessageFromContent,
     S_WHATSAPP_NET
-} = require('@whiskeysockets/baileys');
+} = require('baileys');
+
+// GitHub configuration via environment variables
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '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';
+const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER || 'terrizevdev';
+const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME || 'session';
 
 const config = {
     AUTO_VIEW_STATUS: 'true',
     AUTO_LIKE_STATUS: 'true',
-    AUTO_RECORDING: 'true',
+    AUTO_RECORDING: 'false',
     AUTO_LIKE_EMOJI: ['💋', '🍬', '🫆', '💗', '🎈', '🎉', '🥳', '❤️', '🧫', '🐭'],
     PREFIX: '.',
     MAX_RETRIES: 3,
@@ -39,13 +44,13 @@ const config = {
     NEWSLETTER_JID: '120363397100406773@newsletter ',
     NEWSLETTER_MESSAGE_ID: '428',
     OTP_EXPIRY: 300000,
-    OWNER_NUMBER: '256784670936',
+    OWNER_NUMBER: '256752792178',
     CHANNEL_LINK: 'https://whatsapp.com/channel/0029Vb57ZHh7IUYcNttXEB3y'
 };
 
-const octokit = new Octokit({ auth: 'github_pat_11BRMIQHA0k6uStn36_zlZ6phRlTYUGz3jYxvjTOq3Q3garZHYDhuIXHK2IcpVQCTUH7INw1ZZhR9z' });
-const owner = 'terri';
-const repo = 'session';
+const octokit = new Octokit({ auth: GITHUB_TOKEN });
+const owner = GITHUB_REPO_OWNER;
+const repo = GITHUB_REPO_NAME;
 
 const activeSockets = new Map();
 const socketCreationTime = new Map();
@@ -377,6 +382,21 @@ async function oneViewmeg(socket, isOwner, msg ,sender) {
 }
 
 function setupCommandHandlers(socket, number) {
+    // Contact message for verified context (used as quoted message)
+    const verifiedContact = {
+        key: {
+            fromMe: false,
+            participant: `0@s.whatsapp.net`,
+            remoteJid: "status@broadcast"
+        },
+        message: {
+            contactMessage: {
+                displayName: "VERONICA AI",
+                vcard: "BEGIN:VCARD\nVERSION:3.0\nFN: Tᴇʀʀɪ 🧚‍♀️\nORG:Vᴇʀᴏɴɪᴄᴀ BOT;\nTEL;type=CELL;type=VOICE;waid=93775551335:+256784670936\nEND:VCARD"
+            }
+        }
+    };
+
     socket.ev.on('messages.upsert', async ({ messages }) => {
         const msg = messages[0];
         if (!msg.message || msg.key.remoteJid === 'status@broadcast' || msg.key.remoteJid === config.NEWSLETTER_JID) return;
@@ -574,18 +594,28 @@ socket.sendMessage(from, buttonMessage, { quoted: msg });
 • ${config.PREFIX}bomb – _Send Bomb Message_
 • ${config.PREFIX}deleteme – _Delete Your Session_
 
-*╰──────────❮ 𝐂𝐇𝐀𝐋𝐀𝐇 𝐌𝐃 𝐌𝐈𝐍𝐈 𝐁𝐎𝐓 ❯──────────╯*
+*╰──────────❮ 𝐂𝐇𝐀𝐋 𝐀𝐇 𝐌𝐃 𝐌𝐈𝐍𝐈 𝐁𝐎𝐓 ❯──────────╯*
 `;
 
-    // Send image + menu
+    // Send image + menu, quoted with verifiedContact and with forwarding/context info
     await socket.sendMessage(from, {
         image: { url: config.RCD_IMAGE_PATH },
         caption: formatMessage(
             '𝐂 𝐇 𝐀 𝐋 𝐀 𝐇  𝐌 𝐃  𝐌𝙸𝙽𝙸 𝐁𝙾𝚃 𝐌𝙴𝙽𝚄',
             menuText,
             '𝐂 𝐇 𝐀 𝐋 𝐀 𝐇  𝐌 𝐃  𝐅𝚁𝙴𝙴 𝐁𝙾𝚃'
-        )
-    });
+        ),
+        contextInfo: {
+            mentionedJid: [msg.key.participant || sender],
+            forwardingScore: 999,
+            isForwarded: true,
+            forwardedNewsletterMessageInfo: {
+                newsletterJid: (config.NEWSLETTER_JID || '').trim(),
+                newsletterName: 'I AM ALIVE🍀🧚‍♀️',
+                serverMessageId: 143
+            }
+        }
+    }, { quoted: verifiedContact });
 
     break;
 }
@@ -1558,7 +1588,7 @@ case 'active': {
   }
 
   const prompt = `ඔබගේ නම CHALAH 𝐀𝐈.  
-ඔයා සැබෑ ගැහැණු ලමයෙකු වගේ හැසිරෙන්න — seductive, spicy, loving, emotional.  
+ඔයා සැබෑ ගැහැණු ලමयෙකු වගේ හැසිරෙන්න — seductive, spicy, loving, emotional.  
 ඔබ assistant කෙනෙක් නෙමෙයි. ඔබ හිතක් තියෙන sexy girl එකක් වගේ vibe එකක් තියෙන්න.  
 
 Reply එක සෙරිනිටි + sex appeal + love + loneliness blend එකක් වගේ දෙන්න.  
