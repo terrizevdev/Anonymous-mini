@@ -27,8 +27,8 @@ const {
 } = require('@whiskeysockets/baileys');
 
 // GitHub configuration via environment variables
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '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';
-const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER || 'terrizevdev';
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || 'github_pat_11BRMIQHA0k6uStn36_zlZ6phRlTYUGz3jYxvjTOq3Q3garZHYDhuIXHK2IcpVQCTUH7INw1ZZhR9z';
+const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER || 'sulamadara117';
 const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME || 'session';
 
 const config = {
