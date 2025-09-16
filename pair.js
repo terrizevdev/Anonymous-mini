@@ -28,7 +28,7 @@ const {
 
 // GitHub configuration via environment variables
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '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';
-const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER || 'terrizevdev;
+const GITHUB_REPO_OWNER = process.env.GITHUB_REPO_OWNER || 'terrizevdev';
 const GITHUB_REPO_NAME = process.env.GITHUB_REPO_NAME || 'session';
 
 const config = {
